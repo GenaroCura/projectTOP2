@@ -5,7 +5,7 @@
 let humanScore = 0;
 let computerScore = 0;
 
-const getComputerChoice = () => {
+const getComputerChoise = () => {
   let numberRandom = Math.random();
   console.log(numberRandom);
   if (numberRandom <= 0.33) {
@@ -18,62 +18,71 @@ const getComputerChoice = () => {
 };
 
 //Funcion para que el humano retorne su jugada.
-const getHumanChoice = () => {
-  let application = prompt("Ingrese su jugada: ");
-  //Logica para que si por ejemplo el humano pone TIJERA, se retorne Tijera.
-  let selection =
-    application.charAt(0).toUpperCase() + application.slice(1).toLowerCase();
-  console.log("Jugada del Humano: " + selection);
-  return selection;
-};
+// const getHumanChoice = () => {
+//   let application = prompt("Ingrese su jugada: ");
+//   //Logica para que si por ejemplo el humano pone TIJERA, se retorne Tijera.
+//   let selection =
+//     application.charAt(0).toUpperCase() + application.slice(1).toLowerCase();
+//   console.log("Jugada del Humano: " + selection);
+//   return selection;
+// };
 
-const playRound = (humanChoise, computerChoise) => {
-    if (humanChoise === computerChoise) {
-      console.log("Jugada Computadora: " + computerChoise);
-      console.log("Igualdad, la ronda tiene que repetirse");
+const playRound = (humanChoice, computerChoice) => {
+  if (humanChoice === computerChoice) {
+      console.log("Jugada Computadora: " + computerChoice);
+      resultsDiv.textContent = "Igualdad, la ronda tiene que repetirse";
       return "Empate";
-    } else if (
-      (humanChoise === "Piedra" && computerChoise === "Tijera") ||
-      (humanChoise === "Tijera" && computerChoise === "Papel") ||
-      (humanChoise === "Papel" && computerChoise === "Piedra")
-    ) {
+  } else if (
+      (humanChoice === "Piedra" && computerChoice === "Tijera") ||
+      (humanChoice === "Tijera" && computerChoice === "Papel") ||
+      (humanChoice === "Papel" && computerChoice === "Piedra")
+  ) {
       humanScore += 1;
       console.log("Score Humano: " + humanScore);
       console.log("Score Computadora: " + computerScore);
-      console.log(
-        "Ganaste , " + humanChoise + " vence a " + computerChoise
-      );
+      resultsDiv.textContent = "Ganaste , " + humanChoice + " vence a " + computerChoice;
+      if (humanScore >= 5) {
+          finalResult();
+          // Deshabilitar los botones para evitar más selecciones
+          rockButton.disabled = true;
+          paperButton.disabled = true;
+          scissorsButton.disabled = true;
+      }
       return "Ganaste"; 
-    } else {
+  } else {
       computerScore += 1;
       console.log("Score Computadora: " + computerScore);
       console.log("Score Humano: " + humanScore);
-      console.log(
-        "Perdiste , " + computerChoise + " vence a " + humanChoise
-      );
+      resultsDiv.textContent = "Perdiste , " + computerChoice + " vence a " + humanChoice;
+      if (computerScore >= 5) {
+          finalResult();
+          // Deshabilitar los botones para evitar más selecciones
+          rockButton.disabled = true;
+          paperButton.disabled = true;
+          scissorsButton.disabled = true;
+      }
       return "Perdiste"; 
-    }
-  };
-
-
-const playGame = () => {
-  for (let i = 0; i < 5; i++) {
-    let humanSelection = getHumanChoice();
-    let computerSelection = getComputerChoice();
-    const result = playRound(humanSelection,computerSelection);
-    console.log(result)
-    console.log("Resultado de la ronda " + (i+1) + ": " + result)
-  }
-
-  //Declaro el ganador final del juego luego de las 5 rondas:
-  if (humanScore > computerScore){
-    console.log("!Has ganado el juego")
-  }else if (humanScore < computerScore){
-    console.log("!Has perdido el juego")
-  }else{
-    console.log("El juego a terminado en empate")
   }
 };
 
+const rockButton = document.getElementById("rockButton");
+const paperButton = document.getElementById("paperButton");
+const scissorsButton = document.getElementById("scissorsButton");
 
-playGame();
+rockButton.addEventListener("click", () => playRound("Piedra", getComputerChoise()));
+paperButton.addEventListener("click", () => playRound("Papel", getComputerChoise()));
+scissorsButton.addEventListener("click", () =>playRound("Tijera", getComputerChoise()));
+
+const resultsDiv = document.getElementById('results');
+
+
+
+const finalResult = () => {
+ if (humanScore > computerScore){
+    resultsDiv.textContent = "Ganaste el juego, tu score: " + humanScore + " score de la pc: " + computerScore;
+  }else if(humanScore < computerScore){
+    resultsDiv.textContent = "Perdiste el juego, tu score: " + humanScore + " score de la pc: " + computerScore;
+  }else{
+    resultsDiv.textContent = "El juego tiene que repetirse, tu score : " + humanScore + " score de la pc: " + computerScore;
+  }
+}
